@@ -74,7 +74,13 @@ SignalHandler::set_handler(unsigned int signum, slot_void slot) {
   if (!slot)
     throw std::logic_error("SignalHandler::set_handler(...) received an empty slot.");
 
-  signal(signum, &SignalHandler::caught);
+  struct sigaction sa;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sa.sa_handler = &SignalHandler::caught;
+
+  sigaction(signum, &sa, NULL);
+
   m_handlers[signum] = slot;
 }
 
