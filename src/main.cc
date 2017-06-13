@@ -80,6 +80,7 @@
 
 #include "thread_worker.h"
 
+void handle_sigwinch(int signum, siginfo_t* sa, void* ptr);
 void handle_sigbus(int signum, siginfo_t* sa, void* ptr);
 void do_panic(int signum);
 void print_help();
@@ -198,11 +199,11 @@ main(int argc, char** argv) {
     SignalHandler::set_ignore(SIGPIPE);
     SignalHandler::set_handler(SIGINT,   std::bind(&Control::receive_normal_shutdown, control));
     SignalHandler::set_handler(SIGTERM,  std::bind(&Control::receive_quick_shutdown, control));
-    SignalHandler::set_handler(SIGWINCH, std::bind(&display::Manager::force_redraw, control->display()));
     SignalHandler::set_handler(SIGSEGV,  std::bind(&do_panic, SIGSEGV));
     SignalHandler::set_handler(SIGILL,   std::bind(&do_panic, SIGILL));
     SignalHandler::set_handler(SIGFPE,   std::bind(&do_panic, SIGFPE));
 
+    SignalHanlder::set_sigaction_handler(SIGWINCH, &handle_sigwinch);
     SignalHandler::set_sigaction_handler(SIGBUS, &handle_sigbus);
 
     // SIGUSR1 is used for interrupting polling, forcing the target
@@ -504,6 +505,14 @@ main(int argc, char** argv) {
   delete worker_thread;
 
   return 0;
+}
+
+void
+handle_sigwinch(int signum, siginfo_t* sa, void* ptr) {
+  if (signum != SIGWINCH)
+    do_panic(signum);
+
+  control->display()->force_redraw();
 }
 
 void
