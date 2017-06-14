@@ -103,7 +103,7 @@ WindowDownloadList::redraw() {
   Range range = rak::advance_bidirectional(m_view->begin_visible(),
                                            m_view->focus() != m_view->end_visible() ? m_view->focus() : m_view->begin_visible(),
                                            m_view->end_visible(),
-                                           m_canvas->height() / layout_height);
+                                           (m_canvas->height() - 1) / layout_height);
 
   // Make sure we properly fill out the last lines so it looks like
   // there are more torrents, yet don't hide it if we got the last one
@@ -122,6 +122,10 @@ WindowDownloadList::redraw() {
     m_canvas->set_default_attributes(A_BOLD);
     m_canvas->print(0, pos++, "  %s", buffer);
   }
+
+  // Don't display torrent information if we don't have the space.
+  if (pos + layout_height > m_canvas->height())
+    break;
 
   if (layout_name == "full") {
     while (range.first != range.second) {
