@@ -34,13 +34,14 @@
 
 torrent::Object
 apply_encryption(const torrent::Object::list_type& args) {
-  uint32_t options_mask = torrent::runtime::NetworkConfig::encryption_none;
+  const uint32_t none = torrent::option_find_string(torrent::OPTION_ENCRYPTION, "none");
+  uint32_t options_mask = none;
 
   for (const auto& arg : args) {
     uint32_t opt = torrent::option_find_string(torrent::OPTION_ENCRYPTION, arg.as_string().c_str());
 
-    if (opt == torrent::runtime::NetworkConfig::encryption_none)
-      options_mask = torrent::runtime::NetworkConfig::encryption_none;
+    if (opt == none)
+      options_mask = none;
     else
       options_mask |= opt;
   }

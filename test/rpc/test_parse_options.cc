@@ -178,11 +178,17 @@ TestParseOptions::test_flag_libtorrent() {
 
 void
 TestParseOptions::test_flags_libtorrent() {
-  FLAGS_LT_ENCRYPTION_ASSERT("",                           torrent::runtime::NetworkConfig::encryption_none);
-  FLAGS_LT_ENCRYPTION_ASSERT("none",                       torrent::runtime::NetworkConfig::encryption_none);
-  FLAGS_LT_ENCRYPTION_ASSERT("require_rc4",                torrent::runtime::NetworkConfig::encryption_require_RC4);
-  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4",                torrent::runtime::NetworkConfig::encryption_require_RC4);
-  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4 | enable_retry", torrent::runtime::NetworkConfig::encryption_require_RC4 | torrent::runtime::NetworkConfig::encryption_enable_retry);
+  FLAGS_LT_ENCRYPTION_ASSERT("",                           torrent::option_find_string(torrent::OPTION_ENCRYPTION, "none"));
+  FLAGS_LT_ENCRYPTION_ASSERT("none",                       torrent::option_find_string(torrent::OPTION_ENCRYPTION, "none"));
+  FLAGS_LT_ENCRYPTION_ASSERT("require_rc4",                torrent::option_find_string(torrent::OPTION_ENCRYPTION, "require_rc4"));
+  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4",                torrent::option_find_string(torrent::OPTION_ENCRYPTION, "require_RC4"));
+  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4 | enable_retry", torrent::option_find_string(torrent::OPTION_ENCRYPTION, "require_RC4")
+                                                         | torrent::option_find_string(torrent::OPTION_ENCRYPTION, "enable_retry"));
+  FLAGS_LT_ENCRYPTION_ASSERT("require",                    torrent::option_find_string(torrent::OPTION_ENCRYPTION, "require"));
+  FLAGS_LT_ENCRYPTION_ASSERT("allow_incoming | enable_retry | prefer_plaintext",
+                             torrent::option_find_string(torrent::OPTION_ENCRYPTION, "allow_incoming")
+                           | torrent::option_find_string(torrent::OPTION_ENCRYPTION, "enable_retry")
+                           | torrent::option_find_string(torrent::OPTION_ENCRYPTION, "prefer_plaintext"));
 
   FLAGS_LT_ENCRYPTION_ASSERT_ERROR("require_");
 }
