@@ -298,7 +298,8 @@ main(int argc, char** argv) {
        "schedule = low_diskspace,5,60,((close_low_diskspace,500M))\n"
        "schedule = prune_file_status,3600,86400,((system.file_status_cache.prune))\n"
 
-       "protocol.encryption.set=allow_incoming,prefer_plaintext,enable_retry\n"
+       "protocol.encryption.handshake.set=allow\n"
+       "protocol.encryption.stream.set=allow\n"
 
        "ui.color.focus.set=reverse\n"
     );
@@ -317,8 +318,6 @@ main(int argc, char** argv) {
     CMD_REDIRECT("ratio.min.set",         "group.seeding.ratio.min.set");
     CMD_REDIRECT("ratio.max.set",         "group.seeding.ratio.max.set");
     CMD_REDIRECT("ratio.upload.set",      "group.seeding.ratio.upload.set");
-
-    CMD_REDIRECT("encryption",            "protocol.encryption.set");
 
     CMD_REDIRECT("check_hash",            "pieces.hash.on_completion.set");
 

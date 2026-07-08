@@ -17,6 +17,7 @@
 #include <torrent/utils/log.h>
 #include <torrent/utils/option_strings.h>
 
+#include "encryption_config.h"
 #include "globals.h"
 #include "control.h"
 #include "command_helpers.h"
@@ -31,24 +32,6 @@
 #include <sys/socket.h>
 #include <systemd/sd-daemon.h>
 #endif
-
-torrent::Object
-apply_encryption(const torrent::Object::list_type& args) {
-  uint32_t options_mask = torrent::runtime::NetworkConfig::encryption_none;
-
-  for (const auto& arg : args) {
-    uint32_t opt = torrent::option_find_string(torrent::OPTION_ENCRYPTION, arg.as_string().c_str());
-
-    if (opt == torrent::runtime::NetworkConfig::encryption_none)
-      options_mask = torrent::runtime::NetworkConfig::encryption_none;
-    else
-      options_mask |= opt;
-  }
-
-  torrent::runtime::network_config()->set_encryption_options(options_mask);
-
-  return torrent::Object();
-}
 
 torrent::Object
 apply_tos(const torrent::Object::string_type& arg) {
@@ -230,7 +213,8 @@ initialize_command_network() {
   CMD_ANY_VALUE_V ("network.listen.backlog.set", [nw_config](auto, auto& value) { return nw_config->set_listen_backlog(value); });
 
   CMD_VAR_BOOL    ("protocol.pex",               true);
-  CMD_ANY_LIST    ("protocol.encryption.set",    [](auto, auto& args)           { return apply_encryption(args); });
+
+  encryption_config::initialize_commands();
 
   CMD_VAR_STRING  ("protocol.connection.leech",            "leech");
   CMD_VAR_STRING  ("protocol.connection.seed",             "seed");

@@ -448,7 +448,8 @@ initialize_command_dynamic() {
   CMD2_ANY         ("strings.choke_heuristics.upload",   std::bind(&torrent::option_list_strings, torrent::OPTION_CHOKE_HEURISTICS_UPLOAD));
   CMD2_ANY         ("strings.choke_heuristics.download", std::bind(&torrent::option_list_strings, torrent::OPTION_CHOKE_HEURISTICS_DOWNLOAD));
   CMD2_ANY         ("strings.connection_type",           std::bind(&torrent::option_list_strings, torrent::OPTION_CONNECTION_TYPE));
-  CMD2_ANY         ("strings.encryption",                std::bind(&torrent::option_list_strings, torrent::OPTION_ENCRYPTION));
+  CMD2_ANY         ("strings.encryption.handshake",      std::bind(&torrent::option_list_strings, torrent::OPTION_ENCRYPTION_MODE));
+  CMD2_ANY         ("strings.encryption.stream",         std::bind(&torrent::option_list_strings, torrent::OPTION_ENCRYPTION_MODE));
   CMD2_ANY         ("strings.ip_filter",                 std::bind(&torrent::option_list_strings, torrent::OPTION_IP_FILTER));
   CMD2_ANY         ("strings.ip_tos",                    std::bind(&torrent::option_list_strings, torrent::OPTION_IP_TOS));
   CMD2_ANY         ("strings.log_group",                 std::bind(&torrent::option_list_strings, torrent::OPTION_LOG_GROUP));
@@ -472,7 +473,8 @@ initialize_command_dynamic() {
   rpc::rpc.mark_safe("strings.choke_heuristics.upload");
   rpc::rpc.mark_safe("strings.choke_heuristics.download");
   rpc::rpc.mark_safe("strings.connection_type");
-  rpc::rpc.mark_safe("strings.encryption");
+  rpc::rpc.mark_safe("strings.encryption.handshake");
+  rpc::rpc.mark_safe("strings.encryption.stream");
   rpc::rpc.mark_safe("strings.ip_filter");
   rpc::rpc.mark_safe("strings.ip_tos");
   rpc::rpc.mark_safe("strings.log_group");

@@ -484,25 +484,19 @@ default is used.
       </varlistentry>
 
       <varlistentry>
-        <term>encryption = <replaceable>option</replaceable>,<replaceable>...</replaceable></term>
+        <term>protocol.encryption.handshake.set = <replaceable>policy</replaceable></term>
         <listitem><para>
 
-Set how rtorrent should deal with encrypted Bittorrent connections. By
-default, encryption is disabled, equivalent to specifying the option
-<emphasis>none</emphasis>. Alternatively, any number of the following
-options may be specified:
-
-        </para><para>
-
-<emphasis>allow_incoming</emphasis> (allow incoming encrypted connections), 
-<emphasis>try_outgoing</emphasis> (use encryption for outgoing connections),
-<emphasis>require</emphasis> (disable unencrypted handshakes), 
-<emphasis>require_RC4</emphasis> (also disable plaintext transmission after the
-initial encrypted handshake),
-<emphasis>enable_retry</emphasis> (if the initial outgoing connection fails, retry
-with encryption turned on if it was off or off if it was on), 
-<emphasis>prefer_plaintext</emphasis> (choose plaintext when peer offers a choice 
-between plaintext transmission and RC4 encryption, otherwise RC4 will be used).
+Control how rtorrent deals with encrypted Bittorrent connections.
+<emphasis>protocol.encryption.handshake.set</emphasis> (deny, allow, prefer,
+require) and <emphasis>protocol.encryption.stream.set</emphasis> (deny, allow,
+prefer, require). Handshake <emphasis>allow</emphasis> accepts plain or PE
+inbound and tries plain first outbound with one PE retry on failure.
+<emphasis>prefer</emphasis> tries PE first with one plain retry. Stream
+<emphasis>allow</emphasis> and <emphasis>prefer</emphasis> offer both
+handshake-only and RC4 on outgoing PE connections. The default is
+handshake=allow, stream=allow. Use <emphasis>protocol.encryption</emphasis> to
+inspect the effective policy.
 
         </para></listitem>
       </varlistentry>

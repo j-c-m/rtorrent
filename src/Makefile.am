@@ -188,6 +188,8 @@ libsub_root_a_SOURCES = \
 	command_local.cc \
 	command_logging.cc \
 	command_network.cc \
+	encryption_config.cc \
+	encryption_config.h \
 	command_peer.cc \
 	command_throttle.cc \
 	command_tracker.cc \

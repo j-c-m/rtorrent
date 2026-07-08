@@ -111,7 +111,7 @@ ElementPeerList::create_info() {
   element->push_column("Client:",    te_command("p.client_version="));
   element->push_column("Options:",   te_command("p.options_str="));
   element->push_column("Connected:", te_command("if=$p.is_incoming=,incoming,outgoing"));
-  element->push_column("Encrypted:", te_command("if=$p.is_encrypted=,yes,$p.is_obfuscated=,handshake,no"));
+  element->push_column("Encrypted:", te_command("if=$p.is_encrypted=,yes,$if=$p.is_obfuscated=\\,handshake\\,no"));
 
   element->push_back("");
   element->push_column("Snubbed:",   te_command("if=$p.is_snubbed=,yes,no"));

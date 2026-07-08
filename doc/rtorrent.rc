@@ -95,14 +95,40 @@
 #schedule2 = ip_tick,0,1800,ip=rakshasa
 #schedule2 = bind_tick,0,1800,bind=rakshasa
 
-# Encryption options, set to none (default) or any combination of the following:
-# allow_incoming, try_outgoing, require, require_RC4, enable_retry, prefer_plaintext
+# --- Protocol encryption (PE handshake / optional RC4 stream) ---
+# Default at startup: handshake=allow stream=allow
 #
-# The example value allows incoming encrypted connections, starts unencrypted
-# outgoing connections but retries with encryption if they fail, preferring
-# plain-text to RC4 encryption after the encrypted handshake.
+# Handshake (PE handshake; incoming accepts plain or PE for allow/prefer):
+#   deny    - plain BT handshake only both ways; no retry
+#   allow   - accept plain or PE inbound; plain first outbound with one PE retry
+#   prefer  - accept plain or PE inbound; PE first outbound with one plain retry
+#   require - PE handshake required both ways; no retry
 #
-# protocol.encryption.set = allow_incoming,enable_retry,prefer_plaintext
+# protocol.encryption.handshake.set = allow
+#
+# Stream (cipher negotiation after PE handshake succeeds):
+#   deny    - offer handshake-only; require handshake-only (no RC4)
+#   allow   - incoming: prefer handshake-only if offered, else RC4
+#             outgoing: offer both handshake-only and RC4
+#   prefer  - incoming: pick RC4 if offered, else handshake-only
+#             outgoing: offer both handshake-only and RC4
+#   require - offer RC4 only; require RC4
+#
+# Outgoing retry summary with handshake=allow (plain first):
+#   stream=allow/prefer -> plain BT -> PE (both)
+#   stream=deny         -> plain BT -> PE (handshake-only)
+#   stream=require      -> plain BT -> PE (RC4-only)
+#
+# Outgoing retry summary with handshake=prefer (PE first):
+#   stream=allow/prefer -> PE (both) -> plain BT
+#   stream=deny         -> PE (handshake-only) -> plain BT
+#   stream=require      -> PE (RC4-only) -> plain BT
+#
+# Negotiated stream cipher is logged at connection_handshake level.
+#
+# protocol.encryption.stream.set = allow
+#
+# Use protocol.encryption to inspect the effective policy.
 
 # Enable DHT support for trackerless torrents or when all trackers are down.
 # May be set to "disable" (completely disable DHT), "off" (do not start DHT),

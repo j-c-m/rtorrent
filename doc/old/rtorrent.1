@@ -214,21 +214,15 @@ Add a preferred filename encoding to the list. The encodings are
 attempted in the order they are inserted, if none match the torrent
 default is used.
 .TP
-\fBencryption = \fIoption\fB,\fI\&...\fB\fR
-Set how rtorrent should deal with encrypted Bittorrent connections. By
-default, encryption is disabled, equivalent to specifying the option
-\fBnone\fR\&. Alternatively, any number of the following
-options may be specified:
-
-\fBallow_incoming\fR (allow incoming encrypted connections), 
-\fBtry_outgoing\fR (use encryption for outgoing connections),
-\fBrequire\fR (disable unencrypted handshakes), 
-\fBrequire_RC4\fR (also disable plaintext transmission after the
-initial encrypted handshake),
-\fBenable_retry\fR (if the initial outgoing connection fails, retry
-with encryption turned on if it was off or off if it was on), 
-\fBprefer_plaintext\fR (choose plaintext when peer offers a choice 
-between plaintext transmission and RC4 encryption, otherwise RC4 will be used).
+\fBprotocol.encryption.handshake.set\fR (deny, allow, prefer, require)
+and \fBprotocol.encryption.stream.set\fR (deny, allow, prefer,
+require) control how rtorrent deals with encrypted Bittorrent
+connections. Handshake \fBallow\fR accepts plain or PE inbound and
+tries plain first outbound with one PE retry on failure.
+\fBprefer\fR tries PE first with one plain retry. Stream \fBallow\fR
+and \fBprefer\fR offer both handshake-only and RC4 on outgoing PE
+connections. The default is handshake=allow, stream=allow. Use
+\fBprotocol.encryption\fR to inspect the effective policy.
 .TP
 \fBpeer_exchange = \fIyes | no\fB\fR
 Enable/disable peer exchange for torrents that aren't marked private. Disabled by default.

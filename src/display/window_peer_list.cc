@@ -16,6 +16,21 @@
 
 namespace display {
 
+namespace {
+
+char
+connection_type_char(const torrent::Peer* p) {
+  if (p->is_encrypted())
+    return p->is_incoming() ? 'R' : 'L';
+
+  if (p->is_obfuscated())
+    return p->is_incoming() ? 'H' : 'h';
+
+  return p->is_incoming() ? 'r' : 'l';
+}
+
+} // namespace
+
 WindowPeerList::WindowPeerList(core::Download* d, PList* l, PList::iterator* f) :
   Window(new Canvas, 0, 0, 0, extent_full, extent_full),
   m_download(d),
@@ -35,6 +50,7 @@ WindowPeerList::redraw() {
   m_canvas->print(x, y, "UP");      x += 7;
   m_canvas->print(x, y, "DOWN");    x += 7;
   m_canvas->print(x, y, "PEER");    x += 7;
+  // CT: R/H/r or L/h/l (RC4 / handshake-only / plain) + peer type (u/p/ )
   m_canvas->print(x, y, "CT/RE/LO"); x += 10;
   m_canvas->print(x, y, "QS");      x += 6;
   m_canvas->print(x, y, "DONE");    x += 6;
@@ -95,7 +111,7 @@ WindowPeerList::redraw() {
       peerType = ' ';
 
     m_canvas->print(x, y, "%c%c/%c%c/%c%c",
-                    p->is_encrypted() ? (p->is_incoming() ? 'R' : 'L') : (p->is_incoming() ? 'r' : 'l'),
+                    connection_type_char(p),
                     peerType,
                     p->is_down_choked() ? std::tolower(remoteChoked) : remoteChoked,
 

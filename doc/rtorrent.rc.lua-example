@@ -72,7 +72,8 @@ rc.throttle.min_peers.seed = 30
 rc.throttle.max_peers.seed = 80
 rc.trackers.numwant = 80
 
-rc.protocol.encryption.set('allow_incoming', 'try_outgoing', 'enable_retry')
+rc.protocol.encryption.handshake.set('allow')
+rc.protocol.encryption.stream.set('prefer')
 
 -- Limits for file handle resources, this is optimized for
 -- an `ulimit` of 1024 (a common default). You MUST leave
