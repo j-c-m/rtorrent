@@ -178,11 +178,26 @@ TestParseOptions::test_flag_libtorrent() {
 
 void
 TestParseOptions::test_flags_libtorrent() {
-  FLAGS_LT_ENCRYPTION_ASSERT("", torrent::net::NetworkConfig::encryption_none);
-  FLAGS_LT_ENCRYPTION_ASSERT("none", torrent::net::NetworkConfig::encryption_none);
-  FLAGS_LT_ENCRYPTION_ASSERT("require_rc4", torrent::net::NetworkConfig::encryption_require_RC4);
-  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4", torrent::net::NetworkConfig::encryption_require_RC4);
-  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4 | enable_retry", torrent::net::NetworkConfig::encryption_require_RC4 | torrent::net::NetworkConfig::encryption_enable_retry);
+  using NC = torrent::net::NetworkConfig;
+
+  FLAGS_LT_ENCRYPTION_ASSERT("", NC::encryption_none);
+  FLAGS_LT_ENCRYPTION_ASSERT("none", NC::encryption_none);
+  FLAGS_LT_ENCRYPTION_ASSERT("require", NC::encryption_require);
+  FLAGS_LT_ENCRYPTION_ASSERT("require_rc4", NC::encryption_require_RC4);
+  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4", NC::encryption_require_RC4);
+  FLAGS_LT_ENCRYPTION_ASSERT("require_RC4 | enable_retry",
+                             NC::encryption_require_RC4 | NC::encryption_enable_retry);
+  FLAGS_LT_ENCRYPTION_ASSERT("allow_incoming | try_outgoing",
+                             NC::encryption_allow_incoming | NC::encryption_try_outgoing);
+  FLAGS_LT_ENCRYPTION_ASSERT("allow_incoming | try_outgoing | require",
+                             NC::encryption_allow_incoming | NC::encryption_try_outgoing | NC::encryption_require);
+
+  // require must not be aliased to allow|try (0.15.7 independent bits).
+  CPPUNIT_ASSERT(NC::encryption_require != (NC::encryption_allow_incoming | NC::encryption_try_outgoing));
+  CPPUNIT_ASSERT((NC::encryption_allow_incoming | NC::encryption_try_outgoing) != NC::encryption_require);
+  CPPUNIT_ASSERT(NC::encryption_require == (1u << 2));
+  CPPUNIT_ASSERT(NC::encryption_require_RC4 == (1u << 3));
+  CPPUNIT_ASSERT(NC::encryption_enable_retry == (1u << 4));
 
   FLAGS_LT_ENCRYPTION_ASSERT_ERROR("require_");
 }
