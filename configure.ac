@@ -67,9 +67,12 @@ AC_DEFINE(USER_AGENT, [std::string(PACKAGE "/" VERSION "/") + torrent::version()
 
 dnl Only update global build variables immediately before generating the output,
 dnl to avoid affecting the global build environment for other autoconf checks.
-LIBS="$PTHREAD_LIBS $CURSES_LIB $CURSES_LIBS $ZLIB_LIBS $DEPENDENCIES_LIBS $LIBS"
-CFLAGS="$CFLAGS $PTHREAD_CFLAGS $CURSES_CFLAGS $ZLIB_CFLAGS $DEPENDENCIES_CFLAGS"
-CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS $CURSES_CFLAGS $ZLIB_CFLAGS $DEPENDENCIES_CFLAGS"
+dnl Put DEPENDENCIES (libtorrent -I$prefix/include) before CURSES (-I/usr/local/include
+dnl on FreeBSD/Homebrew). First -I wins; a ports/system libtorrent header would otherwise
+dnl shadow the in-tree install and break pieces.sendfile (use_sendfile missing).
+LIBS="$DEPENDENCIES_LIBS $PTHREAD_LIBS $CURSES_LIB $CURSES_LIBS $ZLIB_LIBS $LIBS"
+CFLAGS="$CFLAGS $PTHREAD_CFLAGS $DEPENDENCIES_CFLAGS $ZLIB_CFLAGS $CURSES_CFLAGS"
+CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS $DEPENDENCIES_CFLAGS $ZLIB_CFLAGS $CURSES_CFLAGS"
 
 TORRENT_CHECK_POPCOUNT()
 
