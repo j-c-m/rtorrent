@@ -229,6 +229,9 @@ initialize_command_local() {
   CMD2_ANY         ("system.files.session.fdatasync",         [](auto, auto)        { return session_thread::manager()->use_fsyncdisk(); });
   CMD2_ANY_VALUE_V ("system.files.session.fdatasync.set",     [](auto, auto& value) { return session_thread::manager()->set_use_fsyncdisk(value); });
 
+  CMD2_ANY         ("system.files.close_idle",         std::bind(&FM_t::close_idle, fileManager));
+  CMD2_ANY_VALUE_V ("system.files.close_idle.set",     std::bind(&FM_t::set_close_idle, fileManager, std::placeholders::_2));
+
   CMD2_ANY         ("system.files.opened_counter",     std::bind(&FM_t::files_opened_counter, fileManager));
   CMD2_ANY         ("system.files.closed_counter",     std::bind(&FM_t::files_closed_counter, fileManager));
   CMD2_ANY         ("system.files.failed_counter",     std::bind(&FM_t::files_failed_counter, fileManager));
